@@ -1,0 +1,25 @@
+$primary: #0A1929;
+$primary-contrast: #fff;
+
+$secondary: #bdc1c6;
+$secondary-contrast: #000;
+
+$success: #4caf50;
+$success-contrast: #fff;
+
+$error: #f44336;
+$error-contrast: #fff;
+
+:export {
+    primary: $primary;
+    primary-contrast: $primary-contrast;
+
+    secondary: $secondary;
+    secondary-contrast: $secondary-contrast;
+
+    success: $success;
+    success-contrast: $success-contrast;
+
+    error: $error;
+    error-contrast: $error-contrast;
+}
