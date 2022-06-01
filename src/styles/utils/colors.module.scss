@@ -1,7 +1,7 @@
-$primary: #0A1929;
+$primary: #041324;
 $primary-contrast: #fff;
 
-$secondary: #bdc1c6;
+$secondary: #eaedf0;
 $secondary-contrast: #000;
 
 $success: #4caf50;
@@ -9,6 +9,9 @@ $success-contrast: #fff;
 
 $error: #f44336;
 $error-contrast: #fff;
+
+$font-color-primary: #ddd3d3;
+$font-color-secundary: #171718;
 
 :export {
     primary: $primary;
@@ -22,4 +25,7 @@ $error-contrast: #fff;
 
     error: $error;
     error-contrast: $error-contrast;
+
+    font-color-primary: $font-color-primary;
+    font-color-secundary: $font-color-secundary;
 }

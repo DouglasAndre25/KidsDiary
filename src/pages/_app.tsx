@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { ThemeProvider } from '@mui/system'
 import customTheme from '../core/theme'
+import Header from '@components/Header'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -10,11 +11,12 @@ function MyApp({ Component, pageProps }: AppProps) {
     <Head>
       <title>Kids Diary</title>
     </Head>
-    <main>
-      <ThemeProvider theme={customTheme}>
+    <ThemeProvider theme={customTheme}>
+      <Header />
+      <main>
         <Component {...pageProps} />
-      </ThemeProvider>
-    </main>
+      </main>
+    </ThemeProvider>
   </>
   )
 }
