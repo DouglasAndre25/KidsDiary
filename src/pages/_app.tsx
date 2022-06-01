@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <title>Kids Diary</title>
     </Head>
     <ThemeProvider theme={customTheme}>
-      <Header />
+        <Header />
       <main>
         <Component {...pageProps} />
       </main>
