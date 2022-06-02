@@ -1,0 +1,10 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres
+    container_name: kidsDiaryDatabase
+    restart: always
+    env_file:
+      - .db-env
