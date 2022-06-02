@@ -6,5 +6,7 @@ services:
     image: postgres
     container_name: kidsDiaryDatabase
     restart: always
+    ports:
+      - 5432:5432
     env_file:
       - .db-env
