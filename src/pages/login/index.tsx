@@ -1,3 +1,4 @@
+import React from 'react'
 import { Button, Card, Grid, Input, InputLabel, Typography, useTheme } from '@mui/material'
 import styles from './styles.module.scss'
 import { useFormik } from 'formik'
@@ -14,7 +15,7 @@ const LoginPage = () => {
         },
         validationSchema: yup.object({
             email: yup.string().
-                email('email invalido').required('O campo é obrigatório.'),
+                email().required('O campo é obrigatório.'),
             password: yup.string().required('O campo é obrigatório.')
         }),
         onSubmit: (values) => {
@@ -74,7 +75,7 @@ const LoginPage = () => {
 
                         <Grid item>
                             <Link href='/register'>
-                                <Button type='submit' color='secondary'>Registrar</Button>
+                                <Button color='secondary'>Criar Conta</Button>
                             </Link>
                         </Grid>
                     </Grid>
