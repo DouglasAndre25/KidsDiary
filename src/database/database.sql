@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "people" (
   "password" VARCHAR(255) NOT NULL,
   "name" VARCHAR(255) NOT NULL,
   "birthday" DATE,
-  "phone" VARCHAR(255) NOT NULL,
+  "phone" VARCHAR(255),
   PRIMARY KEY ("id")
 );
 
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "student" (
   "name" VARCHAR(255) NOT NULL,
   "birthday" DATE,
   "registration_number" INT NOT NULL,
-  "responsible_id" INT NOT NULL,
+  "responsible_id" INT,
   PRIMARY KEY ("id")
 );
 
@@ -38,8 +38,7 @@ CREATE TABLE IF NOT EXISTS "responsible" (
 CREATE TABLE IF NOT EXISTS "class" (
   "id" SERIAL,
   "name" VARCHAR(255) NOT NULL,
-  "teacher_id" INT NOT NULL,
-  "school_id" INT NOT NULL,
+  "teacher_id" INT,
   PRIMARY KEY ("id")
 );
 
@@ -47,14 +46,6 @@ CREATE TABLE IF NOT EXISTS "class_student" (
   "id" SERIAL,
   "class_id" INT NOT NULL,
   "student_id" INT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS "school" (
-  "id" SERIAL,
-  "name" VARCHAR(255) NOT NULL,
-  "city" VARCHAR(255) NOT NULL,
-  "state" VARCHAR(255) NOT NULL,
-  PRIMARY KEY ("id")
 );
 
 CREATE TABLE IF NOT EXISTS "event" (
@@ -86,8 +77,6 @@ ALTER TABLE "class" ADD CONSTRAINT "fk_class_id" FOREIGN KEY ("teacher_id") REFE
 ALTER TABLE "class_student" ADD CONSTRAINT "fk_class_student_id" FOREIGN KEY ("class_id") REFERENCES "class" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "class_student" ADD CONSTRAINT "fk_class_student_id2" FOREIGN KEY ("student_id") REFERENCES "student" ("id") ON DELETE CASCADE;
-
-ALTER TABLE "class" ADD CONSTRAINT "fk_school_id" FOREIGN KEY ("school_id") REFERENCES "school" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "event" ADD CONSTRAINT "fk_event_id" FOREIGN KEY ("student_id") REFERENCES "student" ("id") ON DELETE CASCADE;
 
