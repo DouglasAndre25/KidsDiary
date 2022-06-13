@@ -12,12 +12,17 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useRouter } from "next/router";
 
 import styles from "./styles.module.scss";
 import Link from "next/link";
+import useRedirectLogged from "../../hooks/useRedirectLogged";
 
 const RegisterPage = () => {
+  useRedirectLogged();
+
   const theme = useTheme();
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -61,7 +66,20 @@ const RegisterPage = () => {
         ),
       role: yup.string().required("Campo obrigatório"),
     }),
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      const response = await fetch(`${process.env.API_URL}/user`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }).then((data) => data.json());
+      if (!response.error) {
+        sessionStorage.setItem("user", JSON.stringify(response));
+        router.push("/");
+      }
+    },
   });
 
   return (

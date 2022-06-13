@@ -12,9 +12,14 @@ import styles from "./styles.module.scss";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import useRedirectLogged from "../../hooks/useRedirectLogged";
 
 const LoginPage = () => {
+  useRedirectLogged();
+
   const theme = useTheme();
+  const router = useRouter();
 
   const formik = useFormik({
     initialValues: {
@@ -25,8 +30,20 @@ const LoginPage = () => {
       email: yup.string().email().required("O campo é obrigatório."),
       password: yup.string().required("O campo é obrigatório."),
     }),
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      const response = await fetch(`${process.env.API_URL}/user/login`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }).then((data) => data.json());
+
+      if (!response.error) {
+        sessionStorage.setItem("user", JSON.stringify(response));
+        router.push("/");
+      }
     },
   });
 
