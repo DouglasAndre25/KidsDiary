@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Grid,
   Card,
@@ -17,12 +17,14 @@ import { useRouter } from "next/router";
 import styles from "./styles.module.scss";
 import Link from "next/link";
 import useRedirectLogged from "../../hooks/useRedirectLogged";
+import UserContext from "../../context/user";
 
 const RegisterPage = () => {
   useRedirectLogged();
 
   const theme = useTheme();
   const router = useRouter();
+  const { setState: setUserState } = useContext(UserContext);
 
   const formik = useFormik({
     initialValues: {
@@ -76,7 +78,9 @@ const RegisterPage = () => {
         body: JSON.stringify(values),
       }).then((data) => data.json());
       if (!response.error) {
-        sessionStorage.setItem("user", JSON.stringify(response));
+        setUserState({
+          ...response.data,
+        });
         router.push("/");
       }
     },

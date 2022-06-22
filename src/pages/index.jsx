@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import useRedirectAnonymous from "../hooks/useRedirectAnonymous";
+import TeacherContent from "../components/TeacherContent";
+import ResponsibleContent from "../components/ResponsibleContent";
+import UserContext from "../context/user";
 
 const Home = () => {
   useRedirectAnonymous();
-  return <h1>Home</h1>;
+  const { state: user } = useContext(UserContext);
+
+  return user?.role === "teacher" ? <TeacherContent /> : <ResponsibleContent />;
 };
 
 export default Home;

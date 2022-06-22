@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Button,
   Card,
@@ -14,12 +14,14 @@ import * as yup from "yup";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import useRedirectLogged from "../../hooks/useRedirectLogged";
+import UserContext from "../../context/user";
 
 const LoginPage = () => {
   useRedirectLogged();
 
   const theme = useTheme();
   const router = useRouter();
+  const { setState: setUserState } = useContext(UserContext);
 
   const formik = useFormik({
     initialValues: {
@@ -41,7 +43,9 @@ const LoginPage = () => {
       }).then((data) => data.json());
 
       if (!response.error) {
-        sessionStorage.setItem("user", JSON.stringify(response));
+        setUserState({
+          ...response.data,
+        });
         router.push("/");
       }
     },
