@@ -9,7 +9,8 @@ import UserContext from "../../context/user";
 const TeacherContent = () => {
   const [studentForm, setStudentForm] = useState(false);
   const [classForm, setClassForm] = useState(false);
-  const [responsibles, setResponsibles] = useState({});
+  const [responsibles, setResponsibles] = useState([]);
+  const [students, setStudents] = useState([]);
 
   const { state: userData } = useContext(UserContext);
 
@@ -25,6 +26,21 @@ const TeacherContent = () => {
       .then((data) => data.json())
       .then((response) => {
         if (!response.error) setResponsibles(response.data);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetch(`${process.env.API_URL}/student`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userData.token}`,
+      },
+    })
+      .then((data) => data.json())
+      .then((response) => {
+        if (!response.error) setStudents(response.data);
       });
   }, []);
 
@@ -58,6 +74,7 @@ const TeacherContent = () => {
           content={
             <StudentForm
               responsibles={responsibles}
+              setStudents={setStudents}
               onClose={() => setStudentForm(false)}
             />
           }
@@ -68,7 +85,12 @@ const TeacherContent = () => {
           open={classForm}
           onClose={() => setClassForm(false)}
           title="Cadastre uma nova Turma"
-          content={<ClassForm />}
+          content={
+            <ClassForm
+              students={students}
+              onClose={() => setClassForm(false)}
+            />
+          }
         />
       )}
     </Grid>

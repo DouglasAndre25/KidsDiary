@@ -13,7 +13,7 @@ import {
 import * as yup from "yup";
 import UserContext from "../../../context/user";
 
-const StudentForm = ({ responsibles, onClose }) => {
+const StudentForm = ({ responsibles, onClose, setStudents }) => {
   const theme = useTheme();
   const { state: userData } = useContext(UserContext);
 
@@ -47,6 +47,7 @@ const StudentForm = ({ responsibles, onClose }) => {
         body: JSON.stringify(values),
       }).then((data) => data.json());
       if (!response.error) {
+        setStudents((students) => [...students, response.data]);
         onClose();
       }
     },
