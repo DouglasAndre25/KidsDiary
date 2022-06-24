@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import UserContext from "../../../context/user";
 
-const ClassForm = ({ students, onClose }) => {
+const ClassForm = ({ students, onClose, setClasses }) => {
   const theme = useTheme();
   const { state: userData } = useContext(UserContext);
 
@@ -43,6 +43,7 @@ const ClassForm = ({ students, onClose }) => {
         body: JSON.stringify(values),
       }).then((data) => data.json());
       if (!response.error) {
+        setClasses();
         onClose();
       }
     },

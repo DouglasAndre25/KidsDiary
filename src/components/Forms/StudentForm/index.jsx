@@ -47,7 +47,7 @@ const StudentForm = ({ responsibles, onClose, setStudents }) => {
         body: JSON.stringify(values),
       }).then((data) => data.json());
       if (!response.error) {
-        setStudents((students) => [...students, response.data]);
+        setStudents();
         onClose();
       }
     },
