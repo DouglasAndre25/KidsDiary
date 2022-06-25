@@ -16,12 +16,12 @@ import {
 } from "@mui/material";
 import UserContext from "../../../context/user";
 
-const ClassForm = ({ students, onClose, setClasses }) => {
+const ClassForm = ({ students, onClose, setClasses, defaultValues }) => {
   const theme = useTheme();
   const { state: userData } = useContext(UserContext);
 
   const formik = useFormik({
-    initialValues: {
+    initialValues: defaultValues ?? {
       name: "",
       students: [],
     },
@@ -33,15 +33,18 @@ const ClassForm = ({ students, onClose, setClasses }) => {
       }),
     }),
     onSubmit: async (values) => {
-      const response = await fetch(`${process.env.API_URL}/class`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${userData.token}`,
-        },
-        body: JSON.stringify(values),
-      }).then((data) => data.json());
+      const response = await fetch(
+        `${process.env.API_URL}/class/${defaultValues ? defaultValues.id : ""}`,
+        {
+          method: defaultValues ? "PUT" : "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userData.token}`,
+          },
+          body: JSON.stringify(values),
+        }
+      ).then((data) => data.json());
       if (!response.error) {
         setClasses();
         onClose();

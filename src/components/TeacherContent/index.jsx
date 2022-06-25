@@ -99,7 +99,12 @@ const TeacherContent = () => {
 
       <Grid item mt={2}>
         {classes.map((grade) => (
-          <GradeCard key={`grade-${grade.id}`} grade={grade} />
+          <GradeCard
+            key={`grade-${grade.id}`}
+            grade={grade}
+            students={students}
+            setClassesCount={setClassesCount}
+          />
         ))}
       </Grid>
       {studentForm && (
