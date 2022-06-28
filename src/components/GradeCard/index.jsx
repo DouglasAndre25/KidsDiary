@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -15,13 +15,32 @@ import SchemeForm from "../Forms/SchemeForm";
 import Modal from "../Modal";
 import styles from "./styles.module.scss";
 import UserContext from "../../context/user";
+import ViewScheme from "../ViewScheme";
 
 const GradeCard = ({ grade, students = [], setClassesCount }) => {
   const [editClassForm, setEditClassForm] = useState(false);
   const [schemeForm, setSchemeForm] = useState(false);
+  const [viewScheme, setViewScheme] = useState(false);
   const [deleteClass, setDeleteClass] = useState(false);
+  const [schemes, setSchemes] = useState([]);
+  const [schemesCount, setSchemesCount] = useState(0);
 
   const { state: userData } = useContext(UserContext);
+
+  useEffect(() => {
+    fetch(`${process.env.API_URL}/scheme/class/${grade.id}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userData.token}`,
+      },
+    })
+      .then((data) => data.json())
+      .then((response) => {
+        if (!response.error) setSchemes(response.data);
+      });
+  }, [schemesCount]);
 
   const handleDeleteClass = () => {
     fetch(`${process.env.API_URL}/class/${grade.id}`, {
@@ -82,7 +101,12 @@ const GradeCard = ({ grade, students = [], setClassesCount }) => {
             >
               Novo planejamento de aula
             </Button>
-            <Button variant="outlined" color="secondary" size="small">
+            <Button
+              onClick={() => setViewScheme(true)}
+              variant="outlined"
+              color="secondary"
+              size="small"
+            >
               Visualizar planejamentos de aula
             </Button>
           </Box>
@@ -128,7 +152,20 @@ const GradeCard = ({ grade, students = [], setClassesCount }) => {
         open={schemeForm}
         onClose={() => setSchemeForm(false)}
         content={
-          <SchemeForm classId={grade.id} onClose={() => setSchemeForm(false)} />
+          <SchemeForm
+            setSchemesCount={setSchemesCount}
+            classId={grade.id}
+            onClose={() => setSchemeForm(false)}
+          />
+        }
+      />
+
+      <Modal
+        title={`Planejamentos da turma ${grade.name}`}
+        open={viewScheme}
+        onClose={() => setViewScheme(false)}
+        content={
+          <ViewScheme setSchemesCount={setSchemesCount} schemes={schemes} />
         }
       />
     </>

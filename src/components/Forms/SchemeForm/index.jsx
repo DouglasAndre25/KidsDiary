@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import UserContext from "../../../context/user";
 
-const SchemeForm = ({ classId, onClose }) => {
+const SchemeForm = ({ classId, onClose, setSchemesCount }) => {
   const theme = useTheme();
   const { state: userData } = useContext(UserContext);
 
@@ -44,6 +44,7 @@ const SchemeForm = ({ classId, onClose }) => {
         .then((data) => data.json())
         .then((data) => {
           if (!data.error) {
+            setSchemesCount((count) => count + 1);
             onClose();
           }
         });
