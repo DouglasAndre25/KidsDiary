@@ -11,12 +11,14 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ClassForm from "../Forms/ClassForm";
+import SchemeForm from "../Forms/SchemeForm";
 import Modal from "../Modal";
 import styles from "./styles.module.scss";
 import UserContext from "../../context/user";
 
 const GradeCard = ({ grade, students = [], setClassesCount }) => {
   const [editClassForm, setEditClassForm] = useState(false);
+  const [schemeForm, setSchemeForm] = useState(false);
   const [deleteClass, setDeleteClass] = useState(false);
 
   const { state: userData } = useContext(UserContext);
@@ -72,7 +74,12 @@ const GradeCard = ({ grade, students = [], setClassesCount }) => {
         </CardContent>
         <CardActions disableSpacing>
           <Box pl={1} display="flex" flexDirection="column">
-            <Button variant="outlined" color="secondary" size="small">
+            <Button
+              onClick={() => setSchemeForm(true)}
+              variant="outlined"
+              color="secondary"
+              size="small"
+            >
               Novo planejamento de aula
             </Button>
             <Button variant="outlined" color="secondary" size="small">
@@ -113,6 +120,15 @@ const GradeCard = ({ grade, students = [], setClassesCount }) => {
               Excluir
             </Button>
           </Box>
+        }
+      />
+
+      <Modal
+        title={"Cadastrar novo planejamento"}
+        open={schemeForm}
+        onClose={() => setSchemeForm(false)}
+        content={
+          <SchemeForm classId={grade.id} onClose={() => setSchemeForm(false)} />
         }
       />
     </>
