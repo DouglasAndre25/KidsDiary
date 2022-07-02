@@ -9,6 +9,7 @@ const ClassPage = () => {
   useRedirectAnonymous();
 
   const [grade, setGrade] = useState({});
+  const [gradeCount, setGradeCount] = useState(0);
 
   const router = useRouter();
   const { id } = router.query;
@@ -29,10 +30,10 @@ const ClassPage = () => {
           if (!response.error) setGrade(response.data);
         });
     }
-  }, [id, userData]);
+  }, [id, userData, gradeCount]);
 
   return (
-    <Grid display="flex" flexDirection="column" container>
+    <Grid display="flex" flexDirection="column" container height="10000000vh">
       <Grid item mt={2} display="flex" justifyContent="space-around">
         <Typography color="primary" variant="h4">
           {grade.name}
@@ -45,6 +46,7 @@ const ClassPage = () => {
             classId={id}
             key={`student-${student.id}`}
             student={student}
+            setGradeCount={setGradeCount}
           />
         ))}
       </Grid>

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import UserContext from "../../../context/user";
 
-const EventForm = ({ isTeacher, onClose, studentId }) => {
+const EventForm = ({ isTeacher, onClose, studentId, setGradeCount }) => {
   const theme = useTheme();
   const { state: userData } = useContext(UserContext);
 
@@ -44,6 +44,7 @@ const EventForm = ({ isTeacher, onClose, studentId }) => {
         .then((data) => data.json())
         .then((response) => {
           if (!response.error) {
+            setGradeCount();
             onClose();
           }
         });
