@@ -128,6 +128,7 @@ const TeacherContent = () => {
           title="Cadastre uma nova Turma"
           content={
             <ClassForm
+              createNew
               students={students}
               onClose={() => setClassForm(false)}
               setClasses={() => setClassesCount((count) => count + 1)}

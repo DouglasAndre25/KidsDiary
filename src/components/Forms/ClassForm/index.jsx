@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import {
@@ -16,9 +16,32 @@ import {
 } from "@mui/material";
 import UserContext from "../../../context/user";
 
-const ClassForm = ({ students, onClose, setClasses, defaultValues }) => {
+const ClassForm = ({
+  students,
+  onClose,
+  setClasses,
+  defaultValues,
+  createNew,
+}) => {
   const theme = useTheme();
   const { state: userData } = useContext(UserContext);
+  const [studentsForm, setStudentsForm] = useState(students);
+
+  useEffect(() => {
+    if (createNew)
+      fetch(`${process.env.API_URL}/student?showDesasociate=true`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userData.token}`,
+        },
+      })
+        .then((data) => data.json())
+        .then((response) => {
+          if (!response.error) setStudentsForm(response.data);
+        });
+  }, [createNew]);
 
   const formik = useFormik({
     initialValues: defaultValues ?? {
@@ -96,14 +119,14 @@ const ClassForm = ({ students, onClose, setClasses, defaultValues }) => {
                   <Chip
                     key={value}
                     label={
-                      students.find((student) => student.id === value).name
+                      studentsForm.find((student) => student.id === value).name
                     }
                   />
                 ))}
               </Box>
             )}
           >
-            {students.map((student) => (
+            {studentsForm.map((student) => (
               <MenuItem value={student.id} key={`student-${student.id}`}>
                 {student.name}
               </MenuItem>

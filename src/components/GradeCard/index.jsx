@@ -16,6 +16,7 @@ import Modal from "../Modal";
 import styles from "./styles.module.scss";
 import UserContext from "../../context/user";
 import ViewScheme from "../ViewScheme";
+import Link from "next/link";
 
 const GradeCard = ({ grade, students = [], setClassesCount }) => {
   const [editClassForm, setEditClassForm] = useState(false);
@@ -65,9 +66,11 @@ const GradeCard = ({ grade, students = [], setClassesCount }) => {
             justifyContent="space-between"
             alignItems="flex-start"
           >
-            <Typography gutterBottom variant="h5" component="h2">
-              {grade.name}
-            </Typography>
+            <Link href={`/class/${grade.id}`}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {grade.name}
+              </Typography>
+            </Link>
 
             <Box>
               <IconButton onClick={() => setEditClassForm(true)}>
