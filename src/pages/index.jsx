@@ -8,7 +8,13 @@ const Home = () => {
   useRedirectAnonymous();
   const { state: user } = useContext(UserContext);
 
-  return user?.role === "teacher" ? <TeacherContent /> : <ResponsibleContent />;
+  return user?.role === "teacher" ? (
+    <TeacherContent />
+  ) : user?.role === "responsible" ? (
+    <ResponsibleContent />
+  ) : (
+    <></>
+  );
 };
 
 export default Home;

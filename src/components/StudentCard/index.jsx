@@ -16,10 +16,12 @@ import { formatDate } from "../../utils/date";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserContext from "../../context/user";
 
-const StudentCard = ({ student, classId, setGradeCount }) => {
-  const [openContent, setOpenContent] = useState(true);
+const StudentCard = ({ student, setGradeCount, isResponsible }) => {
+  const [openContent, setOpenContent] = useState(false);
   const [openEvent, setOpenEvent] = useState(false);
   const [deleteStudent, setDeleteStudent] = useState(false);
+  const [deleteEvent, setDeleteEvent] = useState(false);
+  const [eventType, setEventType] = useState("");
 
   const { state: userData } = useContext(UserContext);
 
@@ -28,7 +30,7 @@ const StudentCard = ({ student, classId, setGradeCount }) => {
       label: "Info para o responsável",
       color: "lightsalmon",
     },
-    justify: {
+    justification: {
       label: "Justificativa de falta",
       color: "darkred",
     },
@@ -51,6 +53,20 @@ const StudentCard = ({ student, classId, setGradeCount }) => {
     });
   };
 
+  const handleDeleteEvent = (eventId) => {
+    fetch(`${process.env.API_URL}/event/${eventId}`, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userData.token}`,
+      },
+    }).then(() => {
+      setDeleteEvent(false);
+      setGradeCount((count) => count + 1);
+    });
+  };
+
   return (
     <Card variant="elevation" className={styles.card}>
       <CardContent>
@@ -60,7 +76,7 @@ const StudentCard = ({ student, classId, setGradeCount }) => {
           alignItems="flex-end"
         >
           <Typography gutterBottom variant="h5" component="h2">
-            {student.name}
+            {student.name} {isResponsible && `- ${student.Classes[0]?.name}`}
           </Typography>
           <IconButton onClick={() => setOpenContent((open) => !open)}>
             <KeyboardArrowDownIcon fontSize="large" />
@@ -71,14 +87,50 @@ const StudentCard = ({ student, classId, setGradeCount }) => {
           <Grid container display="flex" flexDirection="column">
             {student.events.map((event) => (
               <Grid item key={`event-${event.id}`} marginBottom={3}>
-                <Typography color={eventTypes[event.type].color}>
-                  {eventTypes[event.type].label}
-                </Typography>
+                <Grid
+                  display="flex"
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                >
+                  <Typography color={eventTypes[event.type].color}>
+                    {eventTypes[event.type].label}
+                  </Typography>
+                  <IconButton
+                    onClick={() => {
+                      setDeleteEvent(true);
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Grid>
                 <Typography variant="caption">
                   {formatDate(new Date(event.occurrence_date))}
                 </Typography>
                 <Typography>Mensagem: {event.description}</Typography>
                 <hr />
+
+                <CustomModal
+                  title={`Excluir a anotação desse aluno?`}
+                  open={deleteEvent}
+                  onClose={() => setDeleteEvent(false)}
+                  content={
+                    <Grid display="flex" justifyContent="space-between">
+                      <Button
+                        color="secondary"
+                        onClick={() => setDeleteEvent(false)}
+                      >
+                        Cancelar
+                      </Button>
+                      <Button
+                        color="secondary"
+                        onClick={() => handleDeleteEvent(event.id)}
+                      >
+                        Excluir
+                      </Button>
+                    </Grid>
+                  }
+                />
               </Grid>
             ))}
           </Grid>
@@ -86,33 +138,65 @@ const StudentCard = ({ student, classId, setGradeCount }) => {
       </CardContent>
       {openContent && (
         <CardActions className={styles.cardActions}>
-          <Button
-            onClick={() => setOpenEvent(true)}
-            variant="outlined"
-            color="secondary"
-            size="small"
-          >
-            Adicionar Registro
-          </Button>
-          <IconButton
-            onClick={() => {
-              setDeleteStudent(true);
-            }}
-          >
-            <DeleteIcon fontSize="medium" />
-          </IconButton>
+          {!isResponsible ? (
+            <Button
+              onClick={() => setOpenEvent(true)}
+              variant="outlined"
+              color="secondary"
+              size="small"
+            >
+              Adicionar Registro
+            </Button>
+          ) : (
+            <>
+              <Button
+                onClick={() => {
+                  setOpenEvent(true);
+                  setEventType("report");
+                }}
+                variant="outlined"
+                color="secondary"
+                size="small"
+              >
+                Adicionar aviso
+              </Button>
+              <Button
+                onClick={() => {
+                  setOpenEvent(true);
+                  setEventType("justification");
+                }}
+                variant="outlined"
+                color="secondary"
+                size="small"
+              >
+                Justificar falta
+              </Button>
+            </>
+          )}
+          {!isResponsible && (
+            <IconButton
+              onClick={() => {
+                setDeleteStudent(true);
+              }}
+            >
+              <DeleteIcon fontSize="medium" />
+            </IconButton>
+          )}
         </CardActions>
       )}
 
       <CustomModal
-        title="Adicionar Registro"
+        title={`Adicionar ${
+          eventType === "justification" ? "Justificativa de falta" : "Registro"
+        }`}
         open={openEvent}
         onClose={() => setOpenEvent(false)}
         content={
           <EventForm
             studentId={student.id}
-            classId={classId}
-            isTeacher
+            student={student}
+            isTeacher={userData.role === "teacher"}
+            eventType={eventType}
             onClose={() => setOpenEvent(false)}
             setGradeCount={() => setGradeCount((count) => count + 1)}
           />
