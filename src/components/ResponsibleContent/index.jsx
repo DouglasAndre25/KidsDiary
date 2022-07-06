@@ -29,7 +29,9 @@ const ResponsibleContent = () => {
   return (
     <Grid display="flex" flexDirection="column" container height="10000000vh">
       <Grid item mt={2} display="flex" justifyContent="space-around">
-        <Typography color="primary" variant="h4"></Typography>
+        <Typography color="primary" variant="h4">
+          Seus Alunos
+        </Typography>
       </Grid>
 
       <Grid item mt={2}>

@@ -4,7 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import UserContext from "../../context/user";
 import CustomModal from "../Modal";
 
-const ViewScheme = ({ schemes, setSchemesCount }) => {
+const ViewScheme = ({ schemes, setSchemesCount, isResponsible }) => {
   const { state: userData } = useContext(UserContext);
   const [deleteScheme, setDeleteScheme] = useState(false);
 
@@ -42,13 +42,15 @@ const ViewScheme = ({ schemes, setSchemesCount }) => {
             </Typography>
           </Grid>
 
-          <IconButton
-            onClick={() => {
-              setDeleteScheme(true);
-            }}
-          >
-            <DeleteIcon fontSize="small" />
-          </IconButton>
+          {!isResponsible && (
+            <IconButton
+              onClick={() => {
+                setDeleteScheme(true);
+              }}
+            >
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+          )}
 
           <CustomModal
             title={`Excluir esse planejamento de aula?`}

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Grid,
   Card,
@@ -15,6 +15,7 @@ import CustomModal from "../Modal";
 import { formatDate } from "../../utils/date";
 import DeleteIcon from "@mui/icons-material/Delete";
 import UserContext from "../../context/user";
+import ViewScheme from "../ViewScheme";
 
 const StudentCard = ({ student, setGradeCount, isResponsible }) => {
   const [openContent, setOpenContent] = useState(false);
@@ -22,6 +23,23 @@ const StudentCard = ({ student, setGradeCount, isResponsible }) => {
   const [deleteStudent, setDeleteStudent] = useState(false);
   const [deleteEvent, setDeleteEvent] = useState(false);
   const [eventType, setEventType] = useState("");
+  const [viewScheme, setViewScheme] = useState(false);
+  const [schemes, setSchemes] = useState([]);
+
+  useEffect(() => {
+    fetch(`${process.env.API_URL}/scheme/class/${student.Classes[0]?.id}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userData.token}`,
+      },
+    })
+      .then((data) => data.json())
+      .then((response) => {
+        if (!response.error) setSchemes(response.data);
+      });
+  }, []);
 
   const { state: userData } = useContext(UserContext);
 
@@ -85,6 +103,17 @@ const StudentCard = ({ student, setGradeCount, isResponsible }) => {
 
         {openContent && (
           <Grid container display="flex" flexDirection="column">
+            <Grid item marginBottom={2} marginTop={2}>
+              <Button
+                onClick={() => setViewScheme(true)}
+                variant="outlined"
+                color="secondary"
+                size="small"
+              >
+                Visualizar planejamentos de aula
+              </Button>
+            </Grid>
+
             {student.events.map((event) => (
               <Grid item key={`event-${event.id}`} marginBottom={3}>
                 <Grid
@@ -133,6 +162,12 @@ const StudentCard = ({ student, setGradeCount, isResponsible }) => {
                 />
               </Grid>
             ))}
+            <CustomModal
+              title={`Planejamentos da turma ${student.Classes[0].name}`}
+              open={viewScheme}
+              onClose={() => setViewScheme(false)}
+              content={<ViewScheme schemes={schemes} isResponsible />}
+            />
           </Grid>
         )}
       </CardContent>
